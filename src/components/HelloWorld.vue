@@ -1,98 +1,31 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
-    <svg-icon icon-class="peoples"></svg-icon>
-    <svg-icon icon-class="increase"></svg-icon>
-    <svg-icon icon-class="user"></svg-icon>
+  <div class="home">
+    <div class="login">
+      <input type="text" placeholder="请输入房间号">
+      <button @click="joinRoom">进入</button>
+    </div>
   </div>
 </template>
 
 <script>
+import { Test } from '../api/vedio.js'
+
 export default {
   name: 'HelloWorld',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  methods: {
+    joinRoom() {
+      this.$router.push({name: 'Room', query: {id: 111}})
+    }
+  },
+  created() {
+    // Test().then(res => {
+    //   console.log('测试请求：', res)
+    // })
   }
 }
 </script>
@@ -100,18 +33,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 // @import '@/styles/mixin.scss';
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: $color;
-}
+  .home {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .login {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      width: 200px;
+      height: 100px;
+      border: 1px solid #eee;
+      button {
+        margin-top: 20px;
+      }
+    }
+  }
 </style>
