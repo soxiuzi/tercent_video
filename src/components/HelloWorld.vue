@@ -1,26 +1,34 @@
 <template>
   <div class="home">
     <div class="login">
-      <input type="text" placeholder="请输入房间号">
-      <button @click="joinRoom">进入</button>
+      <el-input placeholder="请输入房间号" v-model="roomId"></el-input>
+      <el-input placeholder="请输入用户Id" v-model="userId"></el-input>
+      <el-button @click="joinRoom">进入</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { Test } from '../api/vedio.js'
+import { getSign } from '../api/vedio.js'
 
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      userId: "",
+      roomId: "",
     }
   },
   methods: {
     joinRoom() {
-      this.$router.push({name: 'Room', query: {id: 111}})
-    }
+      let that = this;
+      getSign(this.userId).then(res => {
+        if(res.data) {
+          that.$router.push({name: 'Room', params: {sign: res.data, roomId: that.roomId, userId: that.userId}})
+        }
+      })
+    },
+    
   },
   created() {
     // Test().then(res => {

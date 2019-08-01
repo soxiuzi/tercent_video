@@ -1,8 +1,8 @@
 import request from '../utils/request'
 
-export function Test() {
+export function getSign(userId) {
   return request({
-    url: '/sign/getSignInSig',
+    url: `/sign/getSignInSig?userId=${userId}`,
     method: 'GET',
   })
 }

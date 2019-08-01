@@ -26,25 +26,26 @@ export function onRelayTimeot(msg) {
 /**
  * 添加新用户
  */
-export function addNewUser(users, id) {
-  return users.push({
+export function addNewUser(id) {
+  console.log('新增信息：', {id, autoplay: true, muted: false, playsinline: false})
+  return {
     id,
     autoplay: true,
     muted: false,
     playsinline: true
-  })
+  }
 }
 
 /**
  * 添加本地流
  */
-export function onLocalStreamAdd(info, users) {
+export function onLocalStreamAdd(info) {
   console.log('本地流信息：', info)
   if (info.stream && info.stream.active === true) {
     let id = "local";
     let video = document.getElementById(id);
     if (!video) {
-      addNewUser(users, id)
+      addNewUser(id)
     }
     video.srcObject = info.stream;
   }
@@ -53,13 +54,13 @@ export function onLocalStreamAdd(info, users) {
 /**
  * 远端视频流新增/更新通知
  */
-export function onRemoteStreamUpdate(info, id) {
+export function onRemoteStreamUpdate(info) {
   console.log('远端视频流信息：', info)
   if (info.stream && info.stream.active === true) {
     let id = info.videoId;
     let video = document.getElementById(id)
     if (!video) {
-      video = addNewUser(users, id)
+      video = addNewUser(id)
     }
     video.srcObject = info.stream
   } else {
@@ -71,25 +72,27 @@ export function onRemoteStreamUpdate(info, id) {
  * 远端视频流断开通知
  */
 
-export function onRemoteStreamRemove(info, users) {
+export function onRemoteStreamRemove(info) {
   let videoNode = document.getElementById(info.videoId);
   if (videoNode) {
     videoNode.srcObject = null;
-    users.filters(item => item.id == info.videoId)
+    document.getElementById(info.videoId).parentElement.removeChild(videoNode);
   }
 }
 
 /**
  * webSocket断开通知
  */
-export function onWebSocketClose(RTC) {
+export function onWebSocketClose() {
+  let RTC = getRTC()
   RTC.quit();
 }
 
 /**
  * 获取本地音频或视频流
  */
-export function getStream(opt, succ, RTC) {
+export function getStream(opt, succ) {
+  let RTC = getRTC()
   RTC.getLocalStream({
     video: true,
     audio: true,
@@ -105,14 +108,45 @@ function onKickout() {
 }
 
 /**
- * 初始化RTC
+ * 获取RTC对象
  */
-export function initRTC(opts) {
-  let RTC = new WebRTCAPI({
+function getRTC() {
+  return new WebRTCAPI({
     userId: 1,
     userSig: 'eJw1j19vgjAUR78LryxLqS3g3hA1GpU4NUyemtJWuP4pTa2Zuuy76xg*3nMefuf*eJv5*p0bA5Jxx3pWeh8e8t5arK4GrGJ855R94oBSihF6WZBKO9jBv*vgGarntRgV6fRzmMZlLHRG-OFpdL8GsW1WeUlTfzP72pZnKGr-e7zVk3zWJNM6WQ78kOQ8udws7ispMlNVxWCPdARLideiiVCQ1eXxOF*8xuSBtel-AQQh3KNRgDvp4KTa6JCQsI9D2nEuRHPRjrmbUe2vvw8-e03x',
     sdkAppId: '1400235712',
     accountType: 1
+  }, function () {
+    RTC.enterRoom({
+      roomid: opts.roomid * 1,
+      privateMapKey: opts.privateMapKey,
+      role: 'user',
+    }, function (info) {
+      console.log('init succ', info)
+      getStream({
+        audio: true,
+        video: true
+      }, function (stream) {
+        RTC.startRTC({
+          stream: stream,
+          role: 'user'
+        })
+      }, RTC)
+    }, function (err) {
+      console.error('init error', err)
+    })
+  })
+}
+
+/**
+ * 初始化RTC
+ */
+export function initRTC(opts) {
+  let RTC = new WebRTCAPI({
+    userId: opts.userId,
+    userSig: opts.userSig,
+    accountType: opts.accountType,
+    sdkAppId: opts.sdkappid
   }, function () {
     RTC.enterRoom({
       roomid: opts.roomid * 1,
@@ -172,7 +206,8 @@ export function push() {
 }
 
 // 停止视频
-export function stopRTC(RTC) {
+export function stopRTC() {
+  let RTC = getRTC()
   RTC.stopRTC(0, function (info) {
     console.log('stop succ')
   }, function (info) {
@@ -181,7 +216,8 @@ export function stopRTC(RTC) {
 }
 
 // 开始视频 
-export function startRTC(RTC) {
+export function startRTC() {
+  let RTC = getRTC()
   RTC.startRTC(0, function (info) {
     console.log('start succ')
   }, function (info) {
