@@ -127,6 +127,7 @@ export default {
      * 新增远端视频流
      */
     onRemoteStreamUpdate (info) {
+      console.log('获取远端的视频流：', info)
       if (info.stream && info.stream.active === true) {
         let id = info.videoId;
         let video = document.getElementById(id);
