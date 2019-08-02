@@ -96,6 +96,7 @@ export default {
     onRelayTimeout (msg) {
       console.log(`onRelayTimeout!${msg ? JSON.stringify(msg) : ""}`)
     },
+    
     /**
      * 创建video对象
      */
@@ -218,7 +219,7 @@ export default {
       this.initRTC({
         "userId": userId,
         "userSig": sign,
-        "sdkAppId": '1400235712',
+        "sdkAppId": '1400237934',
         "accountType": 1,
         "roomId": roomId
       })
