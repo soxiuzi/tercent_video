@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "alloyfinger": "^0.1.16",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "cssnano": "^4.1.7",
     "normalize.css": "^8.0.1",
     "postcss-aspect-ratio-mini": "^0.0.2",
